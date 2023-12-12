@@ -72,6 +72,9 @@ public class Category {
                 preparedStatement.setInt(1, itemId);
                 preparedStatement.setInt(2, categoryId);
                 preparedStatement.executeUpdate();
+
+                // Add the item to the local items list
+                items.add(item);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -148,13 +151,32 @@ public class Category {
         }
     }
     
-    // Method to display items in the category (not querying the database, just displaying the local items list)
+    
     public void displayItemsInCategory() {
-        System.out.println("Items in Category '" + getCategoryName() + "':");
-        for (Item item : items) {
-            System.out.println(item.getItemName());
+    System.out.println("Items in Category '" + getCategoryName() + "':");
+
+    try (Connection connection = connect()) {
+        String selectItemsQuery = "SELECT item_name, price FROM Item WHERE category_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectItemsQuery)) {
+            preparedStatement.setInt(1, categoryId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.isBeforeFirst()) {
+                    System.out.println("No items in this category.");
+                } else {
+                    while (resultSet.next()) {
+                        String itemName = resultSet.getString("item_name");
+                        double price = resultSet.getDouble("price");
+                        System.out.println("- " + itemName + " (Price: $" + price + ")");
+                    }
+                }
+            }
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
+
     
      private static Connection connect() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, user, password);

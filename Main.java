@@ -11,6 +11,7 @@ public class Main {
             System.out.println("1. Create a new shopping list");
             System.out.println("2. Administrative Section");
             System.out.println("3. Exit");
+            
 
             int choice = scanner.nextInt();
 
@@ -184,5 +185,27 @@ public class Main {
     }
 }
 
+  private static void displayItemsInCategory() {
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.print("Enter the category ID to display items: ");
+    int categoryId = scanner.nextInt();
+
+    // Create an instance of the Category class
+    Category category = new Category(categoryId, "");
+
+    // Retrieve the category name from the database
+    String categoryName = category.getCategoryNameFromDatabase();
+
+    // Check if the categoryName is not null before creating the Category object
+    if (categoryName != null) {
+        category.setCategoryName(categoryName);
+
+        // Display items in the category
+        category.displayItemsInCategory();
+    } else {
+        System.out.println("Category with ID " + categoryId + " not found in the database.");
+    }
+}
    
 }
