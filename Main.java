@@ -148,42 +148,92 @@ public class Main {
     private static void deleteItemFromCategory() {
     Scanner scanner = new Scanner(System.in);
 
-    System.out.print("Enter the item ID you want to remove from the category: ");
-    int itemId = scanner.nextInt();
+    System.out.print("Enter the category ID from which you want to delete an item: ");
+    int categoryId = scanner.nextInt();
 
-    // Create an instance of the Item class
-    Item item = new Item();
-    item.setItemId(itemId);
+    // Create an instance of the Category class
+    Category category = new Category(categoryId, "");
 
-    // Call the deleteItemFromCategory method
-    item.deleteItemFromCategory();
-}
-    
-  private static void updateItemInCategory() {
-    Scanner scanner = new Scanner(System.in);
+    // Retrieve the category name from the database
+    String categoryName = category.getCategoryNameFromDatabase();
 
-    System.out.print("Enter the item ID you want to update: ");
-    int itemId = scanner.nextInt();
+    // Check if the categoryName is not null before creating the Category object
+    if (categoryName != null) {
+        category.setCategoryName(categoryName);
 
-    // Create an instance of the Item class
-    Item item = new Item();
-    item.setItemId(itemId);
+        // Display items in the category
+        System.out.println("Items in Category " + categoryName + " with ID " + categoryId + ":");
+        category.displayItemsInCategory();
 
-    // Displays the previous name
-    String currentItemName = item.getCurrentItemName();
-    if (currentItemName != null) {
-        System.out.println("Current Item Name: " + currentItemName);
-        
-        // Prompt the user for the new item name
-        System.out.print("Enter the new item name: ");
-        String newItemName = scanner.next();
+        System.out.print("Enter the item ID you want to remove from the category: ");
+        int itemId = scanner.nextInt();
 
-        
-        item.updateItemName(newItemName);
+        // Create an instance of the Item class
+        Item item = new Item();
+        item.setItemId(itemId);
+
+        // Call the deleteItemFromCategory method
+        item.deleteItemFromCategory();
     } else {
-        System.out.println("Item with ID " + itemId + " not found in the database.");
+        System.out.println("Category with ID " + categoryId + " not found in the database.");
     }
 }
+
+    
+ private static void updateItemInCategory() {
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.print("Enter the category ID: ");
+    int categoryId = scanner.nextInt();
+
+    // Create an instance of the Category class
+    Category category = new Category(categoryId, "");
+
+    // Retrieve the category name from the database
+    String categoryName = category.getCategoryNameFromDatabase();
+
+    if (categoryName != null) {
+        category.setCategoryName(categoryName);
+
+        // Display items in the category
+        category.displayItemsInCategory();
+
+        System.out.print("Enter the item ID you want to update: ");
+        int itemId = scanner.nextInt();
+
+        // Create an instance of the Item class
+        Item item = new Item();
+        item.setItemId(itemId);
+
+        // Display the previous name and price
+        String currentItemName = item.getCurrentItemName();
+        double currentPrice = item.getCurrentItemPrice();
+
+        if (currentItemName != null) {
+            System.out.println("Current Item Name: " + currentItemName);
+            System.out.println("Current Item Price: $" + currentPrice);
+
+            // Prompt the user for the new item name
+            System.out.print("Enter the new item name: ");
+            String newItemName = scanner.next();
+
+            // Prompt the user for the new item price
+            System.out.print("Enter the new item price: ");
+            double newItemPrice = scanner.nextDouble();
+
+            item.updateItemName(newItemName);
+            item.updateItemPrice(newItemPrice);
+
+            System.out.println("Item details updated successfully.");
+        } else {
+            System.out.println("Item with ID " + itemId + " not found in the database.");
+        }
+    } else {
+        System.out.println("Category with ID " + categoryId + " not found in the database.");
+    }
+}
+
+
 
   private static void displayItemsInCategory() {
     Scanner scanner = new Scanner(System.in);

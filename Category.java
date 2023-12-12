@@ -156,7 +156,7 @@ public class Category {
     System.out.println("Items in Category '" + getCategoryName() + "':");
 
     try (Connection connection = connect()) {
-        String selectItemsQuery = "SELECT item_name, price FROM Item WHERE category_id = ?";
+        String selectItemsQuery = "SELECT item_id, item_name, price FROM Item WHERE category_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectItemsQuery)) {
             preparedStatement.setInt(1, categoryId);
 
@@ -165,9 +165,10 @@ public class Category {
                     System.out.println("No items in this category.");
                 } else {
                     while (resultSet.next()) {
+                        int itemId = resultSet.getInt("item_id");
                         String itemName = resultSet.getString("item_name");
                         double price = resultSet.getDouble("price");
-                        System.out.println("- " + itemName + " (Price: $" + price + ")");
+                        System.out.println("- Item ID: " + itemId + ", Name: " + itemName + " (Price: $" + price + ")");
                     }
                 }
             }
@@ -176,6 +177,7 @@ public class Category {
         e.printStackTrace();
     }
 }
+
 
     
      private static Connection connect() throws SQLException {

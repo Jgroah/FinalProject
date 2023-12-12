@@ -167,6 +167,44 @@ public String getCurrentItemName() {
     return null;
 }
 
+public double getCurrentItemPrice() {
+        try (Connection connection = connect()) {
+            String selectItemPriceQuery = "SELECT price FROM Item WHERE item_id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectItemPriceQuery)) {
+                preparedStatement.setInt(1, itemId);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getDouble("price");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Return -1 if there's an error or if the item is not found
+    }
+
+    public void updateItemPrice(double newPrice) {
+        try (Connection connection = connect()) {
+            String updateItemPriceQuery = "UPDATE Item SET price = ? WHERE item_id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateItemPriceQuery)) {
+                preparedStatement.setDouble(1, newPrice);
+                preparedStatement.setInt(2, itemId);
+
+                int affectedRows = preparedStatement.executeUpdate();
+
+                if (affectedRows > 0) {
+                    System.out.println("Item price updated successfully.");
+                } else {
+                    System.out.println("Failed to update item price. Item not found.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
    
     private static Connection connect() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, user, password);
