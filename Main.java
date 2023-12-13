@@ -312,7 +312,8 @@ public class Main {
             System.out.println("3. Add item to store");
             System.out.println("4. Delete item from store");
             System.out.println("5. Update item in store");
-            System.out.println("6. Exit to Main Menu");
+            System.out.println("6. Look up where an item is available");
+            System.out.println("7. Exit to Main Menu");
 
             int adminChoice = scanner.nextInt();
 
@@ -332,7 +333,10 @@ public class Main {
                 case 5: 
                     updateItemInStore();
                     break;
-                case 6:
+                case 6: 
+                    lookupItemAvailability();
+                    break;
+                case 7:
                     return; // Exit to the main menu
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
@@ -407,6 +411,14 @@ public class Main {
         System.out.println("Deleted!");
     }
     
+    private static Item lookupItemAvailability() {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter the item ID to display stores it is available at: ");
+        int itemId = scanner.nextInt();
+        
+        Item item = Item.lookupItemAvailability(itemId);
+        return item;
+    }
     
 }
