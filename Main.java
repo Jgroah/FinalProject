@@ -42,7 +42,8 @@ public class Main {
             System.out.println("3. Add item to category");
             System.out.println("4. Delete item from category");
             System.out.println("5. Update item in category");
-            System.out.println("6. Exit to Main Menu");
+            System.out.println("6. Delete Category");
+            System.out.println("7. Exit");
 
             int adminChoice = scanner.nextInt();
 
@@ -63,7 +64,10 @@ public class Main {
                     updateItemInCategory();
                     break;
                 case 6:
-                    return; // Exit to the main menu
+                    deleteCategory();
+                    break;
+                case 7:
+                    return; 
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
@@ -85,27 +89,31 @@ public class Main {
 
 
     private static void updateCategoryName() {
-        Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the category ID you want to update: ");
-        int categoryId = scanner.nextInt();
+    // Display all categories with IDs and names
+    Category.displayAllCategories();
 
-        // Retrieve the current category name from the database
-        Category categoryToUpdate = new Category(categoryId, "");
-        String currentCategoryName = categoryToUpdate.getCategoryNameFromDatabase();
+    System.out.print("Enter the category ID you want to update: ");
+    int categoryId = scanner.nextInt();
 
-        if (currentCategoryName != null) {
-            System.out.println("Current Category Name: " + currentCategoryName);
+    // Retrieve the current category name from the database
+    Category categoryToUpdate = new Category(categoryId, "");
+    String currentCategoryName = categoryToUpdate.getCategoryNameFromDatabase();
 
-            System.out.print("Enter the new category name: ");
-            String newCategoryName = scanner.next();
+    if (currentCategoryName != null) {
+        System.out.println("Category ID: " + categoryId);
+        System.out.println("Current Category Name: " + currentCategoryName);
 
-            categoryToUpdate.updateCategoryName(newCategoryName);
-            System.out.println("Category name updated successfully.");
-        } else {
-            System.out.println("Category with ID " + categoryId + " not found in the database.");
-        }
+        System.out.print("Enter the new category name: ");
+        String newCategoryName = scanner.next();
+
+        categoryToUpdate.updateCategoryName(newCategoryName);
+        System.out.println("Category name updated successfully.");
+    } else {
+        System.out.println("Category with ID " + categoryId + " not found in the database.");
     }
+}
     
     private static void addItemToCategory() {
     Scanner scanner = new Scanner(System.in);
@@ -258,4 +266,36 @@ public class Main {
     }
 }
    
+  public static void deleteCategory() {
+        Scanner scanner = new Scanner(System.in);
+
+        // Display all categories with IDs and names
+        Category.displayAllCategories();
+
+        System.out.print("Enter the category ID you want to delete: ");
+        int categoryId = scanner.nextInt();
+
+        // Check if the category exists
+        Category categoryToDelete = new Category(categoryId, "");
+        String categoryName = categoryToDelete.getCategoryNameFromDatabase();
+
+        if (categoryName != null) {
+            System.out.println("Category ID: " + categoryId);
+            System.out.println("Category Name: " + categoryName);
+
+            // Confirm deletion with the user
+            System.out.print("Are you sure you want to delete this category? (yes/no): ");
+            String confirmation = scanner.next().toLowerCase();
+
+            if (confirmation.equals("yes")) {
+                // Delete the category and its associated items from the database
+                categoryToDelete.deleteCategory();
+                System.out.println("Category deleted successfully.");
+            } else {
+                System.out.println("Deletion canceled.");
+            }
+        } else {
+            System.out.println("Category with ID " + categoryId + " not found in the database.");
+        }
+    }
 }

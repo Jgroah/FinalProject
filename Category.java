@@ -178,7 +178,47 @@ public class Category {
     }
 }
 
+    public static void displayAllCategories() {
+        System.out.println("All Categories:");
 
+            try (Connection connection = connect()) {
+                String selectCategoriesQuery = "SELECT category_id, category_name FROM Category";
+                try (PreparedStatement preparedStatement = connection.prepareStatement(selectCategoriesQuery)) {
+                    try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                        while (resultSet.next()) {
+                            int categoryId = resultSet.getInt("category_id");
+                            String categoryName = resultSet.getString("category_name");
+                            System.out.println("- Category ID: " + categoryId + ", Name: " + categoryName);
+                        }
+                    }
+                }
+            }
+                catch (SQLException e) {
+                e.printStackTrace();
+        }
+    }
+    
+    
+
+    public void deleteCategory() {
+        try (Connection connection = connect()) {
+            // Delete items associated with the category
+            String deleteItemsQuery = "DELETE FROM ItemCategory WHERE category_id = ?";
+            try (PreparedStatement deleteItemsStatement = connection.prepareStatement(deleteItemsQuery)) {
+                deleteItemsStatement.setInt(1, categoryId);
+                deleteItemsStatement.executeUpdate();
+            }
+
+            // Delete the category
+            String deleteCategoryQuery = "DELETE FROM Category WHERE category_id = ?";
+            try (PreparedStatement deleteCategoryStatement = connection.prepareStatement(deleteCategoryQuery)) {
+                deleteCategoryStatement.setInt(1, categoryId);
+                deleteCategoryStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
      private static Connection connect() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, user, password);
