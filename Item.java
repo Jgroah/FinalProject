@@ -204,29 +204,51 @@ public double getCurrentItemPrice() {
             e.printStackTrace();
         }
     }
+    
+    public static void displayAllItems() {
+    System.out.println("All Items:");
 
-
-   public static Item lookupItemAvailability (int itemID) {
-        try (Connection connection = connect()) {
-            String select = "SELECT store_id FROM ItemStore WHERE item_id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(select);
-            preparedStatement.setInt(1, itemID);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                System.out.println("these stores contain your item: " 
-                        + rs.getInt("store_id"));
-                System.out.println("-------------");
+    try (Connection connection = connect()) {
+        String selectItemsQuery = "SELECT item_id, item_name FROM Item";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectItemsQuery)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int itemId = resultSet.getInt("item_id");
+                    String itemName = resultSet.getString("item_name");
+                    System.out.println("- ItemID: " + itemId + ", ItemName: " + itemName);
+                }
             }
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
 
+    public static Item getItemById(int itemId) {
+    try (Connection connection = connect()) {
+        String selectItemQuery = "SELECT * FROM Item WHERE item_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectItemQuery)) {
+            preparedStatement.setInt(1, itemId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Item item = new Item();
+                    item.setItemId(itemId);
+                    item.setItemName(resultSet.getString("item_name"));
+                    item.setPrice(resultSet.getDouble("price"));
+                    item.setCategoryId(resultSet.getInt("category_id"));
+                    // Set other properties as needed
+                    return item;
+                }
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
    
     private static Connection connect() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, user, password);
     }
 }
-

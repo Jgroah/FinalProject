@@ -46,18 +46,18 @@ import java.sql.*;
     public void setItems(List<Item> items) {
         this.items = items;
     }
-
-    public static ShoppingList createNewShoppingList(int customerId) {
+    
+    public int createNewShoppingList() {
         try (Connection connection = connect()) {
-            String createShoppingListQuery = "INSERT INTO ShoppingList (customer_id) VALUES (?) RETURNING shopping_list_id";
+            String insertShoppingListQuery = "INSERT INTO ShoppingList (customer_id) VALUES (?) RETURNING shopping_list_id";
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(createShoppingListQuery)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertShoppingListQuery)) {
                 preparedStatement.setInt(1, customerId);
 
-                try (var resultSet = preparedStatement.executeQuery()) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        int shoppingListId = resultSet.getInt("shopping_list_id");
-                        return new ShoppingList(shoppingListId, customerId);
+                        shoppingListId = resultSet.getInt("shopping_list_id");
+                        return shoppingListId;
                     }
                 }
             }
@@ -65,9 +65,10 @@ import java.sql.*;
             e.printStackTrace();
         }
 
-        return null; // Return null if there's an error
+        return -1;
     }
 
+    
     public void addItemToShoppingList(Item item) {
         int itemId = item.createNewItem();
 

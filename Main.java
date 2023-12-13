@@ -8,16 +8,15 @@ public class Main {
 
         while (true) {
             System.out.println("Main Menu:");
-            System.out.println("1. Create a new shopping list");
+            System.out.println("1. Shopping List Menu");
             System.out.println("2. Administrative Section");
             System.out.println("3. Exit");
-            
 
             int choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
-                   //Add User section here
+                    shoppingListMenu();
                     break;
                 case 2:
                     enterAdminSection();
@@ -31,7 +30,48 @@ public class Main {
             }
         }
     }
+    
+    private static void shoppingListMenu() {
+        Scanner scanner = new Scanner(System.in);
 
+        //System.out.print("Enter the Shopping List ID: ");
+        //int shoppingListId = scanner.nextInt();
+
+        while (true) {
+            System.out.println("Shopping List Menu:");
+            System.out.println("1. Add Item to Shopping List");
+            System.out.println("2. Delete Item from Shopping List");
+            System.out.println("3. Display All Items in Shopping List");
+            System.out.println("4. Find Highest Priced Item");
+            System.out.println("5. Find Lowest Priced Item");
+            System.out.println("6. Back to Main Menu");
+
+            int shoppingListChoice = scanner.nextInt();
+
+            switch (shoppingListChoice) {
+                case 1:
+                    addItemToShoppingList();
+                    break;
+                case 2:
+                    deleteItemFromShoppingList();
+                    break;
+                case 3:
+                    displayAllItemsInShoppingList();
+                    break;
+                case 4:
+                    findHighestPricedItem();
+                    break;
+                case 5:
+                    findLowestPricedItem();
+                    break;
+                case 6:
+                    return; // Back to the main menu
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+    
     private static void enterAdminSection() {
         Scanner scanner = new Scanner(System.in);
 
@@ -76,19 +116,108 @@ public class Main {
             }
         }
     }
+    
+    private static void createNewShoppingList() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the customer ID for the new shopping list: ");
+        int customerId = scanner.nextInt();
 
-    private static void createNewCategory() {
+        ShoppingList newShoppingList = new ShoppingList(0, customerId);
+        int shoppingListId = newShoppingList.createNewShoppingList();
+        if (shoppingListId != -1) {
+            System.out.println("Shopping list created with ID: " + shoppingListId);
+        } else {
+            System.out.println("Failed to create a new shopping list.");
+        }
+    }
+
+   private static void addItemToShoppingList() {
     Scanner scanner = new Scanner(System.in);
-    System.out.println("Enter the name of the new category: ");
-    String categoryName = scanner.next();
 
-    Category newCategory = Category.createNewCategory(categoryName);
-    if (newCategory != null) {
-        System.out.println("Category created with ID: ");
+    // Display all items with itemId and itemName
+    Item.displayAllItems();
+
+    System.out.println("Enter the shopping list ID where you want to add the item: ");
+    int shoppingListId = scanner.nextInt();
+
+    System.out.println("Enter the itemId of the item you want to add to the shopping list: ");
+    int itemId = scanner.nextInt();
+
+    // You may need to retrieve the item from the database based on the itemId
+    Item newItem = Item.getItemById(itemId);
+
+    if (newItem != null) {
+        ShoppingList shoppingList = new ShoppingList(shoppingListId, 0);
+        shoppingList.addItemToShoppingList(newItem);
+
+        System.out.println("Item added to shopping list successfully.");
     } else {
-        System.out.println("Failed to create a new category.");
+        System.out.println("Item with itemId " + itemId + " not found.");
     }
 }
+
+
+    private static void deleteItemFromShoppingList() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the shopping list ID from which you want to delete an item: ");
+        int shoppingListId = scanner.nextInt();
+
+        // You may need to retrieve the shopping list from the database based on the ID
+
+        // Display items in the shopping list
+        ShoppingList shoppingList = new ShoppingList(shoppingListId, 0);
+        shoppingList.displayAllItemsInShoppingList();
+
+        System.out.print("Enter the item ID you want to remove from the shopping list: ");
+        int itemId = scanner.nextInt();
+
+        Item item = new Item();
+        item.setItemId(itemId);
+
+        shoppingList.deleteItemFromShoppingList(item);
+
+        System.out.println("Item deleted from shopping list successfully.");
+    }
+
+    private static void displayAllItemsInShoppingList() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the shopping list ID to display items: ");
+        int shoppingListId = scanner.nextInt();
+
+        ShoppingList shoppingList = new ShoppingList(shoppingListId, 0);
+        shoppingList.displayAllItemsInShoppingList();
+    }
+
+    private static void findHighestPricedItem() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the shopping list ID to find the highest priced item: ");
+        int shoppingListId = scanner.nextInt();
+
+        ShoppingList shoppingList = new ShoppingList(shoppingListId, 0);
+        shoppingList.findHighestPricedItem();
+    }
+
+    private static void findLowestPricedItem() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the shopping list ID to find the lowest priced item: ");
+        int shoppingListId = scanner.nextInt();
+
+        ShoppingList shoppingList = new ShoppingList(shoppingListId, 0);
+        shoppingList.findLowestPricedItem();
+    }
+
+    private static void createNewCategory() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the name of the new category: ");
+        String categoryName = scanner.next();
+
+        Category newCategory = Category.createNewCategory(categoryName);
+        if (newCategory != null) {
+            System.out.println("Category created with ID: ");
+        } else {
+            System.out.println("Failed to create a new category.");
+        }
+    }
 
 
     private static void updateCategoryName() {
@@ -312,8 +441,7 @@ public class Main {
             System.out.println("3. Add item to store");
             System.out.println("4. Delete item from store");
             System.out.println("5. Update item in store");
-            System.out.println("6. Look up where an item is available");
-            System.out.println("7. Exit to Main Menu");
+            System.out.println("6. Exit to Main Menu");
 
             int adminChoice = scanner.nextInt();
 
@@ -333,10 +461,7 @@ public class Main {
                 case 5: 
                     updateItemInStore();
                     break;
-                case 6: 
-                    lookupItemAvailability();
-                    break;
-                case 7:
+                case 6:
                     return; // Exit to the main menu
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
@@ -411,14 +536,6 @@ public class Main {
         System.out.println("Deleted!");
     }
     
-    private static Item lookupItemAvailability() {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the item ID to display stores it is available at: ");
-        int itemId = scanner.nextInt();
-        
-        Item item = Item.lookupItemAvailability(itemId);
-        return item;
-    }
     
 }
