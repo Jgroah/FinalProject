@@ -76,7 +76,7 @@ public class Store {
             }
         }
         catch (SQLException e) {
-            
+            e.printStackTrace();
         }
         return null;
     }
