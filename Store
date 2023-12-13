@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Store {
         
-    private static String jdbcUrl = "jdbc:postgresql://localhost:5432/Assignment9";
+    private static String jdbcUrl = "jdbc:postgresql://localhost:5432/ShoppingList";
     private static String user = "postgres";
     private static String password = "!1Snappycrab";
     
@@ -80,7 +80,8 @@ public class Store {
         }
         return null;
     }
-    //displays all items available at a store
+    
+    //displays items available at a store
     public static Store displayStoreItems (int storeID) {
         try (Connection connection = connect()) {
             String select = "SELECT item_id FROM ItemStore WHERE store_id = ?";
@@ -88,8 +89,10 @@ public class Store {
             preparedStatement.setInt(1, storeID);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                System.out.println("this store contains item id: " + rs.getInt("item_id"));
+                System.out.println("This store contains the following items: " 
+                        + rs.getInt("item_id"));
                 System.out.println("-------------");
+                
             }
         }
         catch (SQLException e) {
@@ -97,6 +100,7 @@ public class Store {
         }
         return null;
     }
+
     //adds an item to the store
     public static Store addItemToStore (int itemID, int storeID) {
         if (itemID != -1) {
@@ -179,7 +183,5 @@ public class Store {
         }
         return null;
     }
-    
-    
     
 }
