@@ -43,7 +43,8 @@ public class Main {
             System.out.println("4. Delete item from category");
             System.out.println("5. Update item in category");
             System.out.println("6. Delete Category");
-            System.out.println("7. Exit");
+            System.out.println("7. View Store Options");
+            System.out.println("8. Exit");
 
             int adminChoice = scanner.nextInt();
 
@@ -67,6 +68,8 @@ public class Main {
                     deleteCategory();
                     break;
                 case 7:
+                    viewStoreOptions();
+                case 8:
                     return; 
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
@@ -298,4 +301,112 @@ public class Main {
             System.out.println("Category with ID " + categoryId + " not found in the database.");
         }
     }
+
+        private static void viewStoreOptions() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Store Admin Section:");
+            System.out.println("1. Create a new store");
+            System.out.println("2. Display available store items");
+            System.out.println("3. Add item to store");
+            System.out.println("4. Delete item from store");
+            System.out.println("5. Update item in store");
+            System.out.println("6. Exit to Main Menu");
+
+            int adminChoice = scanner.nextInt();
+
+            switch (adminChoice) {
+                case 1:
+                    createNewStore();
+                    break;
+                case 2:
+                    displayStoreItems();
+                    break;
+                case 3:
+                    addItemToStore();
+                    break;
+                case 4:
+                    deleteItemFromStore();
+                    break;
+                case 5: 
+                    updateItemInStore();
+                    break;
+                case 6:
+                    return; // Exit to the main menu
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+    
+    private static void createNewStore() {
+    Scanner scanner = new Scanner(System.in);
+    System.out.println("Enter the name of the new Store: ");
+    String storeName = scanner.next();
+    System.out.println("Enter the location of the new Store: ");
+    String storeLocation = scanner.next();
+
+    Store newStore = Store.createNewStore(storeName, storeLocation);
+    if (newStore != null) {
+        System.out.println("Store created with ID: ");
+    } else {
+        System.out.println("Failed to create a new store.");
+    }
+}
+    
+    private static Store displayStoreItems() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the Store ID to display items: ");
+        int storeId = scanner.nextInt();
+        
+        Store store = Store.displayStoreItems(storeId);
+        return store;
+    }
+    
+    private static void updateItemInStore() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Please enter the ID of the store: ");
+        int storeId = scanner.nextInt();
+        
+        System.out.println("Please enter the ID of the old item: ");
+        int oldItem = scanner.nextInt();
+        
+        System.out.println("Please enter the ID of the new item: ");
+        int newItem = scanner.nextInt();
+        
+        Store.updateStoreItem(storeId, oldItem, newItem);
+        System.out.println("Updated!");
+    }
+    
+    private static void addItemToStore() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Please enter the item ID: ");
+        int itemId = scanner.nextInt();
+        
+        System.out.println("Please enter the store ID: ");
+        int storeId = scanner.nextInt();
+        
+        Store.addItemToStore(itemId, storeId);
+        System.out.println("Added!");
+    }
+    
+    private static void deleteItemFromStore() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Please enter the item ID: ");
+        int itemId = scanner.nextInt();
+        
+        System.out.println("Please enter the store ID: ");
+        int storeId = scanner.nextInt();
+        
+        Store.deleteItemFromStore(itemId, storeId);
+        System.out.println("Deleted!");
+    }
+    
+
+    
 }
