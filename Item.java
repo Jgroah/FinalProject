@@ -205,7 +205,8 @@ public double getCurrentItemPrice() {
         }
     }
 
-   public static Store lookupItemAvailability (int itemID) {
+
+   public static Item lookupItemAvailability (int itemID) {
         try (Connection connection = connect()) {
             String select = "SELECT store_id FROM ItemStore WHERE item_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(select);
