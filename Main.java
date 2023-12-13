@@ -44,7 +44,8 @@ public class Main {
             System.out.println("3. Display All Items in Shopping List");
             System.out.println("4. Find Highest Priced Item");
             System.out.println("5. Find Lowest Priced Item");
-            System.out.println("6. Back to Main Menu");
+            System.out.println("6. Display Total Cost of Shopping List"); // New option
+            System.out.println("7. Back to Main Menu");
 
             int shoppingListChoice = scanner.nextInt();
 
@@ -65,6 +66,9 @@ public class Main {
                     findLowestPricedItem();
                     break;
                 case 6:
+                    displayTotalCostOfShoppingList();
+                    break;
+                case 7:
                     return; // Back to the main menu
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
@@ -204,6 +208,15 @@ public class Main {
 
         ShoppingList shoppingList = new ShoppingList(shoppingListId, 0);
         shoppingList.findLowestPricedItem();
+    }
+    
+    private static void displayTotalCostOfShoppingList() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the shopping list ID to display total cost: ");
+        int shoppingListId = scanner.nextInt();
+
+        ShoppingList shoppingList = new ShoppingList(shoppingListId, 0);
+        shoppingList.displayTotalCostOfShoppingList();
     }
 
     private static void createNewCategory() {

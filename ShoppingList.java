@@ -11,7 +11,7 @@ import java.sql.*;
  public class ShoppingList {
     static final String jdbcUrl = "jdbc:postgresql://localhost:5432/ShoppingList";
     static final String user = "postgres";
-    static final String password = "!1Snappycrab";
+    static final String password = "admin";
 
     private int shoppingListId;
     private int customerId;
@@ -184,6 +184,33 @@ import java.sql.*;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public double displayTotalCostOfShoppingList() {
+        double totalCost = 0.0;
+
+        try (Connection connection = connect()) {
+            String selectTotalCostQuery = "SELECT SUM(i.price) AS total_cost " +
+                    "FROM Item i " +
+                    "JOIN ShoppingListItem sli ON i.item_id = sli.item_id " +
+                    "WHERE sli.shopping_list_id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectTotalCostQuery)) {
+                preparedStatement.setInt(1, shoppingListId);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        totalCost = resultSet.getDouble("total_cost");
+                        System.out.println("Total Cost of Shopping List (ID: " + shoppingListId + "): $" + totalCost);
+                    } else {
+                        System.out.println("No items in this shopping list.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return totalCost;
     }
 
     private static Connection connect() throws SQLException {
