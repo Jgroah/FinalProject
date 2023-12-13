@@ -47,6 +47,27 @@ import java.sql.*;
         this.items = items;
     }
 
+    public static ShoppingList createNewShoppingList(int customerId) {
+        try (Connection connection = connect()) {
+            String createShoppingListQuery = "INSERT INTO ShoppingList (customer_id) VALUES (?) RETURNING shopping_list_id";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(createShoppingListQuery)) {
+                preparedStatement.setInt(1, customerId);
+
+                try (var resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int shoppingListId = resultSet.getInt("shopping_list_id");
+                        return new ShoppingList(shoppingListId, customerId);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Return null if there's an error
+    }
+
     public void addItemToShoppingList(Item item) {
         int itemId = item.createNewItem();
 
