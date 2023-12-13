@@ -247,6 +247,25 @@ public double getCurrentItemPrice() {
     }
     return null;
 }
+
+   
+   public static Item lookupItemAvailability (int itemID) {
+        try (Connection connection = connect()) {
+            String select = "SELECT store_id FROM ItemStore WHERE item_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            preparedStatement.setInt(1, itemID);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                System.out.println("these stores contain your item: " 
+                        + rs.getInt("store_id"));
+                System.out.println("-------------");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
    
     private static Connection connect() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, user, password);
